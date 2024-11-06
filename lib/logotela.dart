@@ -9,14 +9,14 @@ class Logotela extends StatefulWidget {
 }
 
 class _LogotelaState extends State<Logotela> {
+  @override
   void initState() {
-    setState(() {
-      Timer(Duration(seconds: 5), () {
+    super.initState();
+      Timer(const Duration(seconds: 5), () {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => TodoListScreen()),
         );
       });
-    });
   }
 
   @override
@@ -37,7 +37,7 @@ class _LogotelaState extends State<Logotela> {
           ),
         ],
       )),
-      backgroundColor: Color.fromARGB(248, 23, 0, 233),
+      backgroundColor: const Color.fromARGB(248, 23, 0, 233),
     );
   }
 }

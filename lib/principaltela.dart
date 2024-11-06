@@ -7,53 +7,67 @@ class TodoListScreen extends StatefulWidget {
 
 class _TodoListScreenState extends State<TodoListScreen> {
   final List<String> _todoItems = [];
+  final List<String> _todoHora =  [];
 
   // Controlador para o input de texto
-  final TextEditingController _textController = TextEditingController();
 
   void _showAddTaskDialog() {
     String newTask = "";
+    String newHour = "";
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Adicionar Tarefa"),
-        content: TextField(
-          autofocus: true,
-          decoration: InputDecoration(hintText: "Digite a nova tarefa"),
-          onChanged: (value) {
-            newTask = value;
-          },
+        title: const Text("Adicionar Tarefa"),
+        content: Column(
+          children:[
+            TextField(
+              autofocus: true,
+              decoration: const InputDecoration(hintText: "Digite a nova tarefa"),
+              onChanged: (value) {
+                newTask = value;
+              },
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              keyboardType: TextInputType.datetime,  
+              decoration: const InputDecoration(hintText: "Informe o horário da Tarefa"),
+              onChanged: (values) {
+                newHour = values;
+              },
+            ),
+          ],
         ),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(); // Fecha o diálogo
             },
-            child: Text("Cancelar"),
+            child: const Text("Cancelar"),
           ),
           TextButton(
             onPressed: () {
               if (newTask.isNotEmpty) {
                 setState(() {
-                  _todoItems.add(newTask); // Adiciona a nova tarefa à lista
+                  _todoItems.add(newTask);
+                  _todoHora.add(newHour); // Adiciona a nova tarefa à lista
                 });
               }
               Navigator.of(context).pop(); // Fecha o diálogo
             },
-            child: Text("Adicionar"),
+            child: const Text("Adicionar"),
           ),
         ],
       ),
     );
   }
 
-  void _addTodoItem(String task) {
+  void _addTodoItem(String task,String hour) {
     if (task.isNotEmpty) {
       setState(() {
         _todoItems.add(task);
-      });
-      _textController.clear(); // Limpa o campo de texto após adicionar
+        _todoItems.add(hour);
+      }); // Limpa o campo de texto após adicionar
     }
   }
 
@@ -67,7 +81,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Color.fromARGB(248, 23, 0, 233),
+          backgroundColor: const Color.fromARGB(248, 23, 0, 233),
           title: Image.asset(
             'assets/logo.png',
             width: 60,
@@ -85,17 +99,18 @@ class _TodoListScreenState extends State<TodoListScreen> {
                         vertical: 4.0, horizontal: 8.0),
                     decoration: BoxDecoration(
                       border: Border.all(
-                          color: Colors.blueAccent), // Define a cor da borda
-                      borderRadius: BorderRadius.circular(
-                          8.0), // Define as bordas arredondadas
+                          color: Colors.blueAccent), 
+                      borderRadius: BorderRadius.circular(8.0), // Define as bordas arredondadas
                     ),
                     child: ListTile(
-                      title: Text(_todoItems[index]),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () => _removeTodoItem(index),
-                      ),
+                      title: Column(
+                        children: [
+                      Text(_todoItems[index]),
+                      Text(_todoHora[index]),
+                      ]
+                      )
                     ),
+                    
                   );
                 },
               ),
@@ -105,7 +120,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
         floatingActionButton: FloatingActionButton(
           onPressed: _showAddTaskDialog,
           tooltip: 'Escreva a tarefa',
-          backgroundColor: Color.fromARGB(240, 3, 3, 248),
+          backgroundColor: const Color.fromARGB(240, 3, 3, 248),
           child: const Icon(
             Icons.add,
             color: Color.fromARGB(255, 255, 255, 255),
