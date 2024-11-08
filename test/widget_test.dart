@@ -5,26 +5,34 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
+import 'package:todolist/logotela.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:todolist/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    // Criação da instância de flutterLocalNotificationsPlugin
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Inicialização das configurações de notificações (do jeito que você fez no main)
+    AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon'); // Defina seu ícone aqui
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Inicialize o flutterLocalNotificationsPlugin
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    // Passe o flutterLocalNotificationsPlugin para o MyApp
+    await tester.pumpWidget(MyApp(
+        flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin));
+
+    // Verifique se o widget foi carregado corretamente
+    expect(find.byType(Logotela), findsOneWidget); // Exemplo de teste de widget
   });
 }
